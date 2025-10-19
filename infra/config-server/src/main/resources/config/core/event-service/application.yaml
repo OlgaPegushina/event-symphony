@@ -1,0 +1,31 @@
+server:
+  port: 0
+
+spring:
+  output:
+    ansi:
+      enabled: always
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:6541/event
+    username: event
+    password: event
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG  # Логи входящих запросов
+    org.springframework.cloud.gateway: DEBUG  # Если gateway в event (но нет)
+    com.netflix.discovery: DEBUG  # Уже включено
+    org.springframework.cloud.loadbalancer: DEBUG  # Для балансировки

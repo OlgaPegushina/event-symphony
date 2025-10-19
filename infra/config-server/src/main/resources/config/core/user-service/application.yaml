@@ -1,0 +1,30 @@
+server:
+  port: 0
+
+spring:
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:6541/user_db
+    username: user_db
+    password: user_db
+  sql:
+    init:
+      mode: never
+  jpa:
+    show-sql: true
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc.time_zone: UTC
+
+logging:
+  level:
+    org.springframework.cloud.loadbalancer: DEBUG
+    com.netflix.discovery: DEBUG

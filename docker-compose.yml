@@ -1,30 +1,17 @@
 services:
-  stats-db:
+  postgres:
     image: postgres:16.1
-    container_name: stat-postgres-graduation
+    container_name: graduation-postgres-db
     ports:
       - "6541:5432"
     environment:
-      - POSTGRES_PASSWORD=stat
-      - POSTGRES_USER=stat
-      - POSTGRES_DB=stat
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql
     healthcheck:
-      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
-      timeout: 5s
-      interval: 5s
-      retries: 10
-
-  ewm-db:
-    image: postgres:16.1
-    container_name: main-postgres-graduation
-    ports:
-      - "6542:5432"
-    environment:
-      - POSTGRES_PASSWORD=main
-      - POSTGRES_USER=main
-      - POSTGRES_DB=main
-    healthcheck:
-      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]  # Проверка дефолтной БД
       timeout: 5s
       interval: 5s
       retries: 10

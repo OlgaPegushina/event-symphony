@@ -5,11 +5,6 @@ spring:
   output:
     ansi:
       enabled: always
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:6541/stat
-    username: stat
-    password: stat
   sql:
     init:
       mode: always
@@ -17,6 +12,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-      properties:
-        hibernate.format_sql: true
-        hibernate.show_sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:6541/stat
+    username: stat
+    password: stat
+
+logging:
+  level:
+    org.springframework.cloud.loadbalancer: DEBUG
+    com.netflix.discovery: DEBUG
