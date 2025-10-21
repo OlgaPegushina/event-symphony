@@ -11,16 +11,15 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: event_service_route
+        - id: event_service_categories
           uri: lb://event-service
           predicates:
-            - Path=/admin/categories/**
-            - Path=/categories/**
-            - Path=/admin/events/**
-            - Path=/users/*/events/**
-            - Path=/events/**
-            - Path=/admin/compilations/**
-            - Path=/compilations/**
+            - Path=/admin/categories/**, /categories/**
+
+        - id: event_service_other
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/events/**, /users/*/events/**, /events/**, /admin/compilations/**, /compilations/**
 
         - id: stats_server_route
           uri: lb://stats-server
@@ -35,7 +34,7 @@ spring:
         - id: request_service_route
           uri: lb://request-service
           predicates:
-            - Path=/users/*/requests**
+            - Path=/users/*/requests/**
 
 management:
   endpoint:
