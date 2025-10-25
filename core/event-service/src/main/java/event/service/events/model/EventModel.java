@@ -12,9 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,37 +38,30 @@ public class EventModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Size(max = 2000)
     @Column(name = "annotation", length = 2000)
     String annotation;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    @NotNull(message = "Category не должна быть пустой")
+    @JoinColumn(name = "category_id", nullable = false)
     Category category;
 
     @Column(name = "confirmed_requests")
     @Min(0)
     Long confirmedRequests;
 
-    @Column(name = "created_on")
-    @NotNull(message = "СreatedOn не должна быть пустой")
+    @Column(name = "created_on", nullable = false)
     LocalDateTime createdOn;
 
-    @Size(max = 7000)
     @Column(name = "description", length = 7000)
     String description;
 
-    @NotNull(message = "EventDate не должна быть пустой")
-    @Column(name = "event_date")
+    @Column(name = "event_date", nullable = false)
     LocalDateTime eventDate;
 
-    @Column(name = "initiator_id")
-    @NotNull(message = "Initiator не должен быть пустым")
+    @Column(name = "initiator_id", nullable = false)
     Long initiatorId;
 
-    @NotNull(message = "Paid не должен быть пустым")
-    @Column(name = "paid")
+    @Column(name = "paid", nullable = false)
     Boolean paid;
 
     @Column(name = "participant_limit")
@@ -80,22 +70,17 @@ public class EventModel {
     @Column(name = "published_on")
     LocalDateTime publishedOn;
 
-    @NotNull(message = "RequestModeration не должна быть пустой")
-    @Column(name = "request_moderation")
+    @Column(name = "request_moderation", nullable = false)
     Boolean requestModeration;
 
-    @NotNull(message = "State не должен быть пустым")
     @Enumerated(EnumType.STRING)
-    @Column(name = "state")
+    @Column(name = "state", nullable = false)
     EventState state;
 
-    @Size(max = 120)
-    @NotBlank(message = "Title cannot be blank")
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, length = 120)
     String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id")
-    @NotNull(message = "Location не должна быть пустой")
+    @JoinColumn(name = "location_id", nullable = false)
     Location location;
 }

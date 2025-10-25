@@ -11,6 +11,7 @@ import interaction.api.exception.ConflictException;
 import interaction.api.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.CollectionUtils;
 import stats.client.StatsClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,6 @@ import stats.dto.dto.ViewStatsDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +67,7 @@ public class AdminServiceImpl implements AdminService {
             throw new BadRequestException("Время начала не может быть позже времени конца");
 
         List<EventState> eventStates = null;
-        if (states != null && !states.isEmpty()) {
+        if (!CollectionUtils.isEmpty(states)) {
             try {
                 eventStates = states.stream()
                         .map(String::toUpperCase)
@@ -78,9 +78,9 @@ public class AdminServiceImpl implements AdminService {
             }
         }
 
-        List<Long> finalUserIds = isEmpty(userIds) ? null : userIds;
-        List<EventState> finalEventStates = isEmpty(eventStates) ? null : eventStates;
-        List<Long> finalCategoryIds = isEmpty(categoryIds) ? null : categoryIds;
+        List<Long> finalUserIds = CollectionUtils.isEmpty(userIds) ? null : userIds;
+        List<EventState> finalEventStates = CollectionUtils.isEmpty(eventStates) ? null : eventStates;
+        List<Long> finalCategoryIds = CollectionUtils.isEmpty(categoryIds) ? null : categoryIds;
 
         Pageable pageable = PageRequest.of(from / size, size);
 
@@ -145,7 +145,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void fillConfirmedRequestsInModels(List<EventModel> events) {
-        if (events == null || events.isEmpty()) return;
+        if (CollectionUtils.isEmpty(events)) return;
 
         List<Long> eventIds = events.stream()
                 .map(EventModel::getId)
@@ -252,7 +252,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private Map<Long, Long> getAmountOfViews(List<EventModel> events) {
-        if (events == null || events.isEmpty()) {
+        if (CollectionUtils.isEmpty(events)) {
             return Collections.emptyMap();
         }
         List<String> uris = events.stream()
@@ -273,7 +273,7 @@ public class AdminServiceImpl implements AdminService {
                     true
             );
             log.debug("Получение статистики");
-            if (stats != null && !stats.isEmpty()) {
+            if (!CollectionUtils.isEmpty(stats)) {
                 for (ViewStatsDto stat : stats) {
                     Long eventId = Long.parseLong(stat.getUri().substring("/events/".length()));
                     viewsMap.put(eventId, stat.getHits());
@@ -283,9 +283,5 @@ public class AdminServiceImpl implements AdminService {
             log.error("Не удалось получить статистику");
         }
         return viewsMap;
-    }
-
-    private <T> boolean isEmpty(Collection<T> collection) {
-        return collection == null || collection.isEmpty();
     }
  }
