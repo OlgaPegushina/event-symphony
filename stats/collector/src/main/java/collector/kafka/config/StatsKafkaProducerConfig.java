@@ -19,6 +19,7 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @Getter
+@SuppressWarnings("unused")
 public class StatsKafkaProducerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     String bootstrapServers;
@@ -31,9 +32,6 @@ public class StatsKafkaProducerConfig {
 
     @Value("${spring.kafka.producer.topic.user-actions}")
     String userActionTopic;
-
-    @Value("${spring.kafka.producer.topic.events-similarity}")
-    String eventsSimilarityTopic;
 
     @Bean
     public ProducerFactory<String, Object> producerFactory() {
@@ -49,7 +47,7 @@ public class StatsKafkaProducerConfig {
 
     @Bean
     public KafkaTemplate<String, Object> kafkaTemplate() {
-        log.info("Создание KafkaTemplate для отправки сообщений на темы: {} и {}", userActionTopic, eventsSimilarityTopic);
+        log.info("Создание KafkaTemplate для отправки сообщений на темы: {}", userActionTopic);
 
         return new KafkaTemplate<>(producerFactory());
     }

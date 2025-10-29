@@ -231,3 +231,19 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+
+  # --- СЕРВИС AGGREGATOR статистики ---
+  aggregator-service:
+    build: ./stats/aggregator
+    container_name: graduation-aggregator-service
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
