@@ -90,22 +90,6 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  # --- СЕРВИС COLLECTOR статистики ---
-  collector-service:
-    build: ./stats/collector
-    container_name: graduation-collector-service
-    depends_on:
-      discovery-server:
-        condition: service_healthy
-      config-server:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-    restart: unless-stopped
-    environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-
   # --- СЕРВИС ПОЛЬЗОВАТЕЛЕЙ ---
   user-service:
     container_name: graduation-user-service
@@ -231,3 +215,19 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
     restart: unless-stopped
+
+  # --- СЕРВИС COLLECTOR статистики ---
+  collector-service:
+    build: ./stats/collector
+    container_name: graduation-collector-service
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
