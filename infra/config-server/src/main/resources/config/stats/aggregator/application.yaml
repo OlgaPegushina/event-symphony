@@ -3,7 +3,7 @@ server:
 
 spring:
   kafka:
-    bootstrap-servers: kafka:29092
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: aggregator-group
       auto-offset-reset: earliest
