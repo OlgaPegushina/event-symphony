@@ -9,9 +9,6 @@ spring:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: ru.practicum.kafka.deserializer.UserActionAvroDeserializer
-      #properties:
-      #  specific.avro.reader: true
-      #  value.deserializer.target.type: ru.practicum.ewm.stats.avro.UserActionAvro
       topic:
         user-actions: stats.user-actions.v1
     producer:

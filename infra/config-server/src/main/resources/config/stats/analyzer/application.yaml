@@ -1,0 +1,56 @@
+grpc:
+  server:
+    port: 0
+
+server:
+  port: 0
+
+spring:
+  output:
+    ansi:
+      enabled: always
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:6541/stat
+    username: stat
+    password: stat
+  kafka:
+    bootstrap-servers: localhost:9092
+    user-consumer:
+      group-id: user-group
+      client-id: user-consumer-1
+      auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: ru.practicum.kafka.deserializer.UserActionAvroDeserializer
+      topic:
+        user-actions: stats.user-actions.v1
+    similarity-consumer:
+      group-id: similarity-group
+      client-id: similarity-consumer-1
+      auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: ru.practicum.kafka.deserializer.EventSimilarityAvroDeserializer
+      topic:
+        user-actions: stats.events-similarity.v1
+
+analyzer:
+  weights:
+    view: 0.4
+    register: 0.8
+    like: 1.0
+
+logging:
+  level:
+    org.springframework.cloud.loadbalancer: WARN
+    com.netflix.discovery: WARN
