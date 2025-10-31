@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Класс, отвечающий за хранение и обновление состояния, необходимого для расчета сходства событий.
  * Это состояние включает:
  * - Максимальный вес взаимодействия пользователя с конкретным событием (userEventWeight).
- * - Сумму квадратов весов всех действий для каждого события (eventSquaredWeightSum).
+ * - Сумму весов всех действий для каждого события (eventWeightSum).
  * - Сумму минимальных весов для пар событий (minWeightsPairSum).
  * - Множество событий, с которыми взаимодействовал пользователь (eventsByUser).
  */
@@ -37,7 +37,7 @@ public class SimilarityState {
      * Ключ: eventId.
      * Значение: Сумма квадратов весов.
      */
-    Map<Long, Double> eventSquaredWeightSum = new ConcurrentHashMap<>();
+    Map<Long, Double> eventWeightSum = new ConcurrentHashMap<>();
 
     /**
      * Сумма минимальных весов для для каждой пары событий.
@@ -59,7 +59,7 @@ public class SimilarityState {
 
     /**
      * Надеюсь, не перемудрила...
-     * Блокировка для защиты операций, связанных с изменением {@link #eventsByUser}.
+         * Блокировка для защиты операций, связанных с изменением {@link #eventsByUser}.
      * Так как HashSet не потокобезопасен, сделаем механизм для синхронизации
      * его изменений. ReadWriteLock позволяет нескольким читателям работать
      * одновременно, но требует блокировки для записи.
@@ -104,26 +104,26 @@ public class SimilarityState {
      *
      * @return Сумма квадратов весов или 0, если для события нет данных.
      */
-    public double getEventSquaredWeightSum(long eventId) {
-        return eventSquaredWeightSum.getOrDefault(eventId, 0.0);
+    public double getEventWeightSum(long eventId) {
+        return eventWeightSum.getOrDefault(eventId, 0.0);
     }
 
     /**
-     * Обновляет сумму квадратов весов для события на дельту.
-     * Прибавляет к текущему значению `deltaSquaredWeight`.
+     * Обновляет сумму весов для события на дельту.
+     * Прибавляет к текущему значению `deltaWeight`.
      *
-     * @param deltaSquaredWeight Разница новых и старых квадратов весов (newWeight^2 - oldWeight^2).
+     * @param deltaWeight Разница новых и старых весов (newWeight - oldWeight).
      *                           Если ключ отсутствует в карте, он добавляет новую пару ключ-значение.
      *                           Если ключ присутствует в карте, он обновляет существующее значение, используя функцию Double::sum
      *                           а именно лямбда-выражение (oldValue, newValue) -> oldValue + newValue.
      */
-    public void updateEventSquaredWeightSum(long eventId, double deltaSquaredWeight) {
+    public void updateEventWeightSum(long eventId, double deltaWeight) {
         // Используем merge для атомарного обновления значения в ConcurrentHashMap.
-        // Если ключа нет, он будет создан со значением deltaSquaredWeight.
+        // Если ключа нет, он будет создан со значением deltaWeight.
         // Если ключ есть, к нему будет применен лямбда-выражение: (oldValue, newValue) -> oldValue + newValue
-        eventSquaredWeightSum.merge(eventId, deltaSquaredWeight, Double::sum);
+        eventWeightSum.merge(eventId, deltaWeight, Double::sum);
         log.trace("Обновлена сумма квадратов для события {}. Дельта: {}. Новое значение: {}",
-                eventId, deltaSquaredWeight, eventSquaredWeightSum.get(eventId));
+                eventId, deltaWeight, eventWeightSum.get(eventId));
     }
 
     /**

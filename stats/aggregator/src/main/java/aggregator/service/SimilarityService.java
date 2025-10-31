@@ -91,9 +91,10 @@ public class SimilarityService {
         // Обновляем максимальный вес для данной пары (пользователь, событие)
         state.updateUserEventWeight(userId, eventId, newWeight);
 
-        // Обновляем сумму квадратов весов для текущего события (SA), прибавляем разницу квадратов delta
-        double deltaSquaredWeight = (newWeight * newWeight) - (oldWeight * oldWeight);
-        state.updateEventSquaredWeightSum(eventId, deltaSquaredWeight);
+        // Обновляем сумму весов для текущего события (SA), прибавляем разницу квадратов delta
+        double deltaWeight = (newWeight - oldWeight);
+        log.debug("Посчитали разницу delta: {}", deltaWeight);
+        state.updateEventWeightSum(eventId, deltaWeight);
 
         // Бежим по всем другим событиям, с которыми этот пользователь уже взаимодействовал.
         // Для каждого такого события нужно пересчитать сходство с текущим событием eventId.
@@ -105,9 +106,13 @@ public class SimilarityService {
 
             // Получаем вес пользователя для другого события.
             double otherEventWeight = state.getUserEventWeight(userId, otherEventId);
+            log.debug("Получили вес пользователя для сравниваемого события: {}", otherEventWeight);
 
             // Обновляем сумму минимальных весов для пары (eventId, otherEventId).
             double deltaSMin = Math.min(newWeight, otherEventWeight) - Math.min(oldWeight, otherEventWeight);
+            log.debug("Обновляемая сумма deltaSMin: {} минимальных весов для пары (eventId: {}, otherEventId: {}): , при " +
+                      "oldWeight: {}, newWeight: {}, otherEventWeight: {}",
+                    deltaSMin, eventId, otherEventId, oldWeight, newWeight, otherEventWeight);
 
             // Если дельта равна 0, значит, минимальное значение не изменилось,
             // и сходство между этой парой событий оставляем прежним.
@@ -135,13 +140,17 @@ public class SimilarityService {
      * @param timestamp Временная метка действия, вызвавшего пересчет.
      */
     private void recalculateAndSendSimilarity(long eventA, long eventB, Instant timestamp) {
+        log.info("Получаем актуальные значения для расчета сходства из состояния");
         // Получаем актуальные значения для расчета сходства из состояния:
         // Smin(A, B) - сумма минимальных весов для пары (A, B)
         double sMin = state.getMinWeightsPairSum(eventA, eventB);
-        // SA - сумма квадратов весов для события A
-        double sA = state.getEventSquaredWeightSum(eventA);
-        // SB - сумма квадратов весов для события B
-        double sB = state.getEventSquaredWeightSum(eventB);
+        log.debug("Smin(A, B): {} для пары ({}, {})",sMin, eventA, eventB);
+        // SA - сумма весов для события A
+        double sA = state.getEventWeightSum(eventA);
+        log.debug("сумма весов для события A: {}", sA);
+        // SB - сумма весов для события B
+        double sB = state.getEventWeightSum(eventB);
+        log.debug("сумма весов для события B: {}", sB);
 
         // Рассчитываем итоговое значение сходства по формуле косинусного сходства:
         // score = Smin(A, B) / (sqrt(SA) * sqrt(SB))

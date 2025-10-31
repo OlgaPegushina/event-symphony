@@ -7,14 +7,10 @@ spring:
     config:
       fail-fast: true
       retry:
-        # Максимальное количество попыток подключения
-        max-attempts: 10
-        # Начальная задержка перед первой повторной попыткой (1.5 секунды)
-        initial-interval: 3000
-        # Максимальная задержка между попытками (5 секунд)
-        max-interval: 5000
-        # Множитель для увеличения задержки с каждой новой попыткой
-        multiplier: 1.2
+        use-random-policy: true
+        max-interval: 10000
+        max-attempts: 20
+        initial-interval: 2000
       discovery:
         enabled: true
         serviceId: config-server

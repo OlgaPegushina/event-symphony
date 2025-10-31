@@ -23,8 +23,7 @@ public interface ProtobufToAvroMapper {
             case ACTION_VIEW -> ActionTypeAvro.VIEW;
             case ACTION_REGISTER -> ActionTypeAvro.REGISTER;
             case ACTION_LIKE -> ActionTypeAvro.LIKE;
-            case UNRECOGNIZED ->
-                    throw new IllegalArgumentException("Неизвестный тип ActionTypeProto: " + actionTypeProto);
+            default -> throw new IllegalArgumentException("Неизвестный тип ActionTypeProto: " + actionTypeProto);
         };
     }
 

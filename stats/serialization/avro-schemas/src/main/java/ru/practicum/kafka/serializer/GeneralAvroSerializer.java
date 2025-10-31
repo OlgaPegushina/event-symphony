@@ -14,13 +14,14 @@ import java.io.IOException;
 @SuppressWarnings("unused")
 public class GeneralAvroSerializer implements Serializer<SpecificRecordBase> {
     private final EncoderFactory encoderFactory = EncoderFactory.get();
-    private BinaryEncoder encoder;
+    //private BinaryEncoder encoder;
 
+    @Override
     public byte[] serialize(String topic, SpecificRecordBase data) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             if (data != null) {
                 DatumWriter<SpecificRecordBase> writer = new SpecificDatumWriter<>(data.getSchema());
-                encoder = encoderFactory.binaryEncoder(out, encoder);
+                BinaryEncoder encoder = encoderFactory.binaryEncoder(out, null);
                 writer.write(data, encoder);
                 encoder.flush();
                 return out.toByteArray();
