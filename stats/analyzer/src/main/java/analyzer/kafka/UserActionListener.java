@@ -25,7 +25,6 @@ public class UserActionListener {
     )
     public void handleUserAction(
             @Payload UserActionAvro avro,
-            // @Header(KafkaHeaders.RECEIVED_KEY) String key,
             Acknowledgment ack) {
 
         log.info("Получено действие пользователя: value={}", avro);

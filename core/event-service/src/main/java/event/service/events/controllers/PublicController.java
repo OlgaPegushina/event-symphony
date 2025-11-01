@@ -80,7 +80,7 @@ public class PublicController {
 
     @PutMapping("/{eventId}/like")
     public void likeEvent(@PathVariable Long eventId, @RequestHeader("X-EWM-USER-ID") Long userId) {
-        log.info("Получен запрос на лайк для события");
+        log.info("Поступил запрос на лайк для события");
         publicService.addLike(eventId, userId);
     }
 }

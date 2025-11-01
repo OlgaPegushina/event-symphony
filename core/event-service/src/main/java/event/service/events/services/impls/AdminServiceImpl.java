@@ -257,6 +257,4 @@ public class AdminServiceImpl implements AdminService {
             event.setLocation(newLocation);
         }
     }
-
-
  }

@@ -22,14 +22,14 @@ import java.util.stream.StreamSupport;
 public class AnalyzerClient {
 
     @GrpcClient("analyzer")
-    RecommendationsControllerGrpc.RecommendationsControllerBlockingStub server;
+    RecommendationsControllerGrpc.RecommendationsControllerBlockingStub controllerBlockingStub;
 
     public Stream<RecommendedEventProto> getRecommendationsForUser(Long userId, Long maxResults) {
         final UserPredictionsRequestProto request = UserPredictionsRequestProto.newBuilder()
                 .setUserId(userId)
                 .setMaxResult(maxResults)
                 .build();
-        final Iterator<RecommendedEventProto> iterator = server.getRecommendationsForUser(request);
+        final Iterator<RecommendedEventProto> iterator = controllerBlockingStub.getRecommendationsForUser(request);
         return asStream(iterator);
     }
 
@@ -39,7 +39,7 @@ public class AnalyzerClient {
                 .setUserId(userId)
                 .setMaxResult(maxResults)
                 .build();
-        final Iterator<RecommendedEventProto> iterator = server.getSimilarEvents(request);
+        final Iterator<RecommendedEventProto> iterator = controllerBlockingStub.getSimilarEvents(request);
         return asStream(iterator);
     }
 
@@ -47,7 +47,7 @@ public class AnalyzerClient {
         final InteractionsCountRequestProto request = InteractionsCountRequestProto.newBuilder()
                 .addAllEventId(eventIds)
                 .build();
-        final Iterator<RecommendedEventProto> iterator = server.getInteractionsCount(request);
+        final Iterator<RecommendedEventProto> iterator = controllerBlockingStub.getInteractionsCount(request);
         return asStream(iterator);
     }
 

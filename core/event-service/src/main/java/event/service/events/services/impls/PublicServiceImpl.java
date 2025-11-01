@@ -98,6 +98,7 @@ public class PublicServiceImpl implements PublicService {
         return result;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventModel> findAllByCategoryId(Long catId) {
         return eventRepository.findAllByCategoryId(catId);

@@ -6,7 +6,6 @@ spring:
     bootstrap-servers: localhost:9092
     consumer:
       group-id: aggregator-group
-      #auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: ru.practicum.kafka.deserializer.UserActionAvroDeserializer
       topic:

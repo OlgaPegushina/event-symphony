@@ -25,7 +25,6 @@ public class SimilarityListener {
     )
     public void handleSimilarity(
             @Payload EventSimilarityAvro avro,
-            //@Header(KafkaHeaders.RECEIVED_KEY) String key,
             Acknowledgment ack) {
 
         log.info("Получен коэффициент схожести: value={}", avro);

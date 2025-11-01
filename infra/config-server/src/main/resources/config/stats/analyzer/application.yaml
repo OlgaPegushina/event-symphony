@@ -23,7 +23,6 @@ spring:
     username: stat
     password: stat
   kafka:
-    #bootstrap-servers: localhost:9092
     user-consumer:
       bootstrap-servers: localhost:9092
       group-id: user-group

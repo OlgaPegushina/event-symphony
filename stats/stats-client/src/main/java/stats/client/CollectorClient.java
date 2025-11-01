@@ -16,7 +16,7 @@ import java.time.Instant;
 public class CollectorClient {
 
     @GrpcClient("collector")
-    UserActionControllerGrpc.UserActionControllerBlockingStub server;
+    UserActionControllerGrpc.UserActionControllerBlockingStub controllerBlockingStub;
 
     public void collectUserAction(Long userId, Long eventId, String actionType, Instant timestamp) {
         UserActionProto request = UserActionProto.newBuilder()
@@ -25,7 +25,7 @@ public class CollectorClient {
                 .setActionType(ActionTypeProto.valueOf(actionType))
                 .setTimestamp(buildTimestamp(timestamp))
                 .build();
-        server.collectUserAction(request);
+        controllerBlockingStub.collectUserAction(request);
     }
 
     private Timestamp buildTimestamp(Instant instant) {

@@ -19,11 +19,8 @@ public class UserActionProducer {
 
     public void sendUserAction(UserActionAvro userAction) {
         String topicName = config.getUserActionTopic();
-        //      long userActionTimestamp = userAction.getTimestamp().toEpochMilli();
 
         log.info("В топик: {} отправляется сообщение: {}", topicName, userAction);
-        //       kafkaTemplate.send(topicName, String.valueOf(userAction.getUserId()), userAction)
-        //       kafkaTemplate.send(topicName, null, userActionTimestamp, String.valueOf(userAction.getUserId()), userAction)
         kafkaTemplate.send(topicName, userAction)
                 .whenComplete((result, exception) -> {
                     if (exception == null) {
