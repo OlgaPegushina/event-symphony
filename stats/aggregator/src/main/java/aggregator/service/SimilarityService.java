@@ -49,7 +49,7 @@ public class SimilarityService {
     public SimilarityService(SimilarityState state, SimilarityProducer producer, AggregatorProperties properties) {
         this.state = state;
         this.producer = producer;
-        // -- Загружаем карту весов из внедренных свойств
+        // Загружаем карту весов из внедренных свойств
         this.actionWeights = properties.getWeights();
 
         log.debug("Инициализация SimilarityService. Загружены веса: {}", this.actionWeights);

@@ -4,6 +4,17 @@ server:
     max-http-post-size: 2097152
     accept-count: 100
 
+grpc:
+  server:
+    enabled: false
+    port: 0
+  client:
+    collector:
+      address: 'discovery:///collector'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
 spring:
   output:
     ansi:

@@ -1,18 +1,15 @@
-package request.service;
+package analyzer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
-@SpringBootApplication(scanBasePackages =
-        {"request.service", "interaction.api", "event.service", "user.service", "stats.client"})
+@SpringBootApplication
 @EnableDiscoveryClient
 @ConfigurationPropertiesScan
-@EnableFeignClients
-public class RequestServiceApp {
+public class AnalyzerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(RequestServiceApp.class, args);
+        SpringApplication.run(AnalyzerApplication.class, args);
     }
 }

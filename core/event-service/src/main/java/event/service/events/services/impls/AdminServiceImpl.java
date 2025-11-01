@@ -12,7 +12,6 @@ import interaction.api.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.CollectionUtils;
-import stats.client.StatsClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,12 +29,12 @@ import event.service.location.service.LocationServiceImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import stats.dto.dto.ViewStatsDto;
+import stats.client.AnalyzerClient;
+import ru.practicum.grpc.ewm.dashboard.message.RecommendedEventProto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -52,7 +51,7 @@ public class AdminServiceImpl implements AdminService {
     CategoryService categoryService;
     LocationServiceImpl locationService;
     LocationMapper locationMapper;
-    StatsClient statsClient;
+    AnalyzerClient analyzerClient;
     RequestClient requestClient;
 
     @Transactional(readOnly = true)
@@ -95,13 +94,15 @@ public class AdminServiceImpl implements AdminService {
 
         List<EventModel> events = eventsPage.getContent();
         fillConfirmedRequestsInModels(events);
-        Map<Long, Long> views = getAmountOfViews(events);
 
         log.debug("Собираем событие для ответа");
         return events.stream()
                 .map(eventModel -> {
                     EventFullDto eventFull = eventMapper.toFullDto(eventModel);
-                    eventFull.setViews(views.getOrDefault(eventFull.getId(), 0L));
+                    eventFull.setRating(analyzerClient.getInteractionsCount(List.of(eventModel.getId()))
+                            .map(RecommendedEventProto::getScore)
+                            .findFirst()
+                            .orElse(0.0));
                     return eventFull;
                 })
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -126,7 +127,10 @@ public class AdminServiceImpl implements AdminService {
 
         log.debug("Сборка события для ответа");
         EventFullDto result = eventMapper.toFullDto(event);
-        result.setViews(getAmountOfViews(List.of(event)).getOrDefault(eventId, 0L));
+        result.setRating(analyzerClient.getInteractionsCount(List.of(event.getId()))
+                .map(RecommendedEventProto::getScore)
+                .findFirst()
+                .orElse(0.0));
 
         return result;
     }
@@ -140,7 +144,10 @@ public class AdminServiceImpl implements AdminService {
         fillConfirmedRequestInModel(event);
 
         EventFullDto dto = eventMapper.toFullDto(event);
-        dto.setViews(getAmountOfViews(List.of(event)).getOrDefault(eventId, 0L));
+        dto.setRating(analyzerClient.getInteractionsCount(List.of(event.getId()))
+                .map(RecommendedEventProto::getScore)
+                .findFirst()
+                .orElse(0.0));
         return dto;
     }
 
@@ -251,37 +258,5 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    private Map<Long, Long> getAmountOfViews(List<EventModel> events) {
-        if (CollectionUtils.isEmpty(events)) {
-            return Collections.emptyMap();
-        }
-        List<String> uris = events.stream()
-                .map(event -> "/events/" + event.getId())
-                .distinct()
-                .collect(Collectors.toList());
 
-        LocalDateTime startTime = LocalDateTime.now().minusDays(1);
-        LocalDateTime endTime = LocalDateTime.now().plusMinutes(5);
-
-        Map<Long, Long> viewsMap = new HashMap<>();
-        try {
-            log.debug("Получение статистики по времени для URI: {} с {} по {}", uris, startTime, endTime);
-            List<ViewStatsDto> stats = statsClient.getStatistics(
-                    startTime,
-                    endTime,
-                    uris,
-                    true
-            );
-            log.debug("Получение статистики");
-            if (!CollectionUtils.isEmpty(stats)) {
-                for (ViewStatsDto stat : stats) {
-                    Long eventId = Long.parseLong(stat.getUri().substring("/events/".length()));
-                    viewsMap.put(eventId, stat.getHits());
-                }
-            }
-        } catch (Exception e) {
-            log.error("Не удалось получить статистику");
-        }
-        return viewsMap;
-    }
  }

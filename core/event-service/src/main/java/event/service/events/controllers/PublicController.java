@@ -13,6 +13,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -63,8 +65,22 @@ public class PublicController {
     @GetMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getEventById(@PathVariable @Positive Long eventId,
-                                     HttpServletRequest request) {
-        log.info("Поступил запрос на получение события по id от ноунейма");
-        return publicService.getEventById(eventId, request);
+                                     HttpServletRequest request,
+                                     @RequestHeader("X-EWM-USER-ID") Long userId) {
+        log.info("Поступил запрос на получение события по id: {} от пользователя", userId);
+        return publicService.getEventById(eventId, request, userId);
+    }
+
+    @GetMapping("/recommendations")
+    public List<EventFullDto> getRecommendations(@RequestParam Long max,
+                                                  @RequestHeader("X-EWM-USER-ID") Long userId) {
+        log.info("Поступил запрос на получение рекомендаций");
+        return publicService.getRecommendation(userId, max);
+    }
+
+    @PutMapping("/{eventId}/like")
+    public void likeEvent(@PathVariable Long eventId, @RequestHeader("X-EWM-USER-ID") Long userId) {
+        log.info("Получен запрос на лайк для события");
+        publicService.addLike(eventId, userId);
     }
 }

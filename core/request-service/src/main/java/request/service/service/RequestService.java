@@ -20,4 +20,6 @@ public interface RequestService {
                                                                         RequestStatusUpdateDto requestStatusUpdateDto);
 
     Map<Long, List<ParticipationRequestDto>> prepareConfirmedRequests(List<Long> eventIds);
+
+    Boolean checkRegistration(Long eventId, Long userId);
 }
