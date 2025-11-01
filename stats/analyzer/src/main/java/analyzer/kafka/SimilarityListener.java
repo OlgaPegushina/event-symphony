@@ -16,6 +16,7 @@ import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@SuppressWarnings("unused")
 public class SimilarityListener {
     SimilarityService similarityService;
 

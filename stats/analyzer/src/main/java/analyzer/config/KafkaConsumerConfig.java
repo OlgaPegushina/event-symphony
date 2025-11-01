@@ -25,6 +25,7 @@ import java.util.Map;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
+@SuppressWarnings("unused")
 public class KafkaConsumerConfig {
     UserConsumer userConsumer = new UserConsumer();
     SimilarityConsumer similarityConsumer = new SimilarityConsumer();

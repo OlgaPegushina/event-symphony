@@ -16,6 +16,7 @@ import ru.practicum.ewm.stats.avro.UserActionAvro;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@SuppressWarnings("unused")
 public class UserActionListener {
     UserActionService userActionService;
 

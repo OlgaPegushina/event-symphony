@@ -21,15 +21,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@SuppressWarnings("unused")
 public class RecommendationController extends RecommendationsControllerGrpc.RecommendationsControllerImplBase {
-    RecommendationsService service;
+    RecommendationsService recommendationsService;
 
     @Override
     public void getRecommendationsForUser(UserPredictionsRequestProto userPredictionsRequestProto,
                                           StreamObserver<RecommendedEventProto> responseObserver) {
         try {
             log.info("Начинаем обрабатывать запрос на получение пользовательских рекомендаций");
-            List<RecommendedEventProto> eventProtos = service.getRecommendationsForUser(userPredictionsRequestProto);
+            List<RecommendedEventProto> eventProtos =
+                    recommendationsService.getRecommendationsForUser(userPredictionsRequestProto);
             eventProtos.forEach(responseObserver::onNext);
             responseObserver.onCompleted();
         } catch (Exception e) {
@@ -45,7 +47,8 @@ public class RecommendationController extends RecommendationsControllerGrpc.Reco
     public void getSimilarEvents(SimilarEventsRequestProto similarEventsRequestProto, StreamObserver<RecommendedEventProto> responseObserver) {
         try {
             log.info("Начинаем обрабатывать запрос на получение похожих событий");
-            List<RecommendedEventProto> eventProtos = service.getSimilarEvents(similarEventsRequestProto);
+            List<RecommendedEventProto> eventProtos =
+                    recommendationsService.getSimilarEvents(similarEventsRequestProto);
             eventProtos.forEach(responseObserver::onNext);
             responseObserver.onCompleted();
         } catch (Exception e) {
@@ -62,7 +65,8 @@ public class RecommendationController extends RecommendationsControllerGrpc.Reco
                                      StreamObserver<RecommendedEventProto> responseObserver) {
         try {
             log.info("Начинаем обрабатывать запрос на получение количества взаимодействий");
-            List<RecommendedEventProto> eventProtos = service.getInteractionsCount(interactionsCountRequestProto);
+            List<RecommendedEventProto> eventProtos =
+                    recommendationsService.getInteractionsCount(interactionsCountRequestProto);
             eventProtos.forEach(responseObserver::onNext);
             responseObserver.onCompleted();
         } catch (Exception e) {
