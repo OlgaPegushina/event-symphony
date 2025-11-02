@@ -26,5 +26,6 @@ spring:
 
 logging:
   level:
-    org.springframework.cloud.loadbalancer: DEBUG
-    com.netflix.discovery: DEBUG
+    root: WARN
+    org.springframework.cloud.loadbalancer: WARN
+    com.netflix.discovery: WARN

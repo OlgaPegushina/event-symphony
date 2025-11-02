@@ -4,6 +4,17 @@ server:
     max-http-post-size: 2097152
     accept-count: 100
 
+grpc:
+  server:
+    enabled: false
+    port: 0
+  client:
+    collector:
+      address: 'discovery:///collector'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
 spring:
   output:
     ansi:
@@ -37,10 +48,11 @@ spring:
 
 logging:
   level:
-    org.springframework.cloud.loadbalancer: DEBUG
-    com.netflix.discovery: DEBUG
-    springframework.cloud.openfeign: DEBUG
-    feign: DEBUG
-    request.service.controller: DEBUG
-    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: DEBUG
-    org.springframework.web.servlet.DispatcherServlet: DEBUG
+    root: WARN
+    org.springframework.cloud.loadbalancer: WARN
+    com.netflix.discovery: WARN
+    springframework.cloud.openfeign: WARN
+    feign: WARN
+    request.service.controller: WARN
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: WARN
+    org.springframework.web.servlet.DispatcherServlet: WARN

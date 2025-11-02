@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: aggregator
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        # Максимальное количество попыток подключения
+        max-attempts: 10
+        # Начальная задержка перед первой повторной попыткой (1.5 секунды)
+        initial-interval: 3000
+        # Максимальная задержка между попытками (5 секунд)
+        max-interval: 5000
+        # Множитель для увеличения задержки с каждой новой попыткой
+        multiplier: 1.2
+      discovery:
+        enabled: true
+        serviceId: config-server
+eureka:
+  instance:
+    preferIpAddress: true
+    instance-id: "${spring.application.name}:${random.value}"
+  client:
+    registerWithEureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

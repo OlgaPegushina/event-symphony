@@ -25,7 +25,9 @@ import request.service.feign.client.UserClient;
 import request.service.mapper.RequestMapper;
 import request.service.model.ParticipationRequest;
 import request.service.repository.RequestRepository;
+import stats.client.CollectorClient;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,6 +35,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -47,6 +50,7 @@ public class RequestServiceImpl implements RequestService {
     RequestMapper requestMapper;
     EventClient eventClient;
     UserClient userClient;
+    CollectorClient collectorClient;
 
     @Transactional(readOnly = true)
     @Override
@@ -62,6 +66,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ParticipationRequestDto createRequest(Long requesterId, Long eventId) {
+        collectorClient.collectUserAction(requesterId, eventId, "ACTION_REGISTER", Instant.now());
         return requestMapper.toParticipationRequestDto(requestRepository.save(validateRequest(requesterId, eventId)));
     }
 
@@ -201,6 +206,15 @@ public class RequestServiceImpl implements RequestService {
         }
         return result;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean checkRegistration(Long eventId, Long userId) {
+        log.info("Запрос в сервис для проверки регистрации");
+        Optional<ParticipationRequest> request = requestRepository.findByEventIdAndRequesterId(eventId, userId);
+        return request.isPresent();
+    }
+
 
     private ParticipationRequest validateRequest(Long requesterId, Long eventId) {
         validateUserExist(requesterId);

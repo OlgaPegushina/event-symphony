@@ -28,11 +28,6 @@ spring:
             - Path=/admin/events/**, /users/*/events/**, /events/**, /admin/compilations/**, /compilations/**
           order: 1
 
-        - id: stats_server_route
-          uri: lb://stats-server
-          predicates:
-            - Path=/hit/**, /stats/**
-
         - id: user_service_route
           uri: lb://user-service
           predicates:

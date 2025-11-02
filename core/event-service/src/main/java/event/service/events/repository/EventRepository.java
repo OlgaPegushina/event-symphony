@@ -43,4 +43,6 @@ public interface EventRepository extends JpaRepository<EventModel, Long> {
             """)
     Page<EventModel> findAllByFiltersAdmin(List<Long> userIds, List<EventState> states, List<Long> categoryIds,
                                            LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
+
+    List<EventModel> findAllByIdIn(List<Long> eventIds);
 }

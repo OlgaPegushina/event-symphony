@@ -81,4 +81,10 @@ public class PrivateRequestController {
         log.info("Получен список eventIds {} для получения подтверждённых заявок", eventIds);
         return requestService.prepareConfirmedRequests(eventIds);
     }
+
+    @GetMapping("/users/requests/confirmed/{eventId}/{userId}")
+    Boolean checkRegistration(@PathVariable Long eventId, @PathVariable Long userId) {
+        log.info("Проверка регистрации пользователя");
+        return requestService.checkRegistration(eventId, userId);
+    }
 }
